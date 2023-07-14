@@ -1,0 +1,17 @@
+services:
+  redmine:
+    image: redmine:alpine
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1::3000
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.redmine-${COMPOSE_PROJECT_NAME:-r2s}.entrypoints=https
+  echo-serv:
+    image: arkbig/echo-serv
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1::7878
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.echo-serv-${COMPOSE_PROJECT_NAME:-r2s}.entrypoints=https
