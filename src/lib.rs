@@ -9,3 +9,4 @@ pub mod app;
 mod cli_args;
 mod log;
 mod redmine;
+mod slack;

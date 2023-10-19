@@ -35,18 +35,22 @@ impl<'a> Payload<'a> {
             json: &serde_json::Value::Null,
         }
     }
+    #[allow(dead_code)]
     pub fn severity(&mut self, severity: Severity) -> &mut Self {
         self.severity = severity;
         self
     }
+    #[allow(dead_code)]
     pub fn warning(&mut self) -> &mut Self {
         self.severity = Severity::Warning;
         self
     }
+    #[allow(dead_code)]
     pub fn error(&mut self) -> &mut Self {
         self.severity = Severity::Error;
         self
     }
+    #[allow(dead_code)]
     pub fn timestamp(&mut self, timestamp: chrono::DateTime<chrono::Utc>) -> &mut Self {
         self.timestamp = timestamp;
         self
@@ -55,10 +59,12 @@ impl<'a> Payload<'a> {
         self.category = category;
         self
     }
+    #[allow(dead_code)]
     pub fn message(&mut self, message: &'a str) -> &mut Self {
         self.message = message;
         self
     }
+    #[allow(dead_code)]
     pub fn json(&mut self, json: &'a serde_json::Value) -> &mut Self {
         self.json = json;
         self
@@ -72,6 +78,7 @@ impl<'a> Drop for Payload<'a> {
 }
 
 #[derive(serde::Serialize)]
+#[allow(dead_code)]
 pub enum Severity {
     Default,
     Debug,
@@ -99,12 +106,14 @@ impl std::fmt::Display for Severity {
     }
 }
 
+#[allow(dead_code)]
 pub fn default(message: &str) -> Payload {
     let mut payload = Payload::default();
     payload.message(message);
     payload
 }
 
+#[allow(dead_code)]
 pub fn warning(message: &str) -> Payload {
     let mut payload = Payload::default();
     payload.message(message).warning();

@@ -1,0 +1,49 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'redmine_to_slack_lib'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=redmine-to-slack"
+                ],
+                "filter": {
+                    "name": "redmine_to_slack_lib",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'redmine-to-slack'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=redmine-to-slack",
+                    "--package=redmine-to-slack"
+                ],
+                "filter": {
+                    "name": "redmine-to-slack",
+                    "kind": "bin"
+                }
+            },
+            "args": [
+                "--redmine-api-key='$REDMINE_API_KEY'",
+                "https://redmine-r2s.dev.test",
+                "https://echo-serv-r2s.dev.test/echo"
+            ],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

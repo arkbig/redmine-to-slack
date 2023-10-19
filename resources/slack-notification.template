@@ -1,0 +1,7 @@
+{url}
+{{ if new_issue.project }}{new_issue.project.name}{{ endif }}
+{{ if new_issue.tracker }}{new_issue.tracker.name}{{ endif }} <{url}|#{new_issue.id}> *{new_issue.subject}* [{{ if new_issue.status }}{new_issue.status.name}{{ endif }}{{ if old_items.status }} <- ~{old_items.status.name}~{{ endif }}]
+担当: {{ if new_issue.assigned_to }}{new_issue.assigned_to.name}{{ endif }}{{ if old_items.assigned_to }} <- ~{old_items.assigned_to.name}~{{ endif }}  |  優先度: {{ if new_issue.priority }}{new_issue.priority.name}{{ endif }}{{ if old_items.priority }} <- ~{old_items.priority.name}~{{ endif }}  |  Last update: {local_updated_time}
+{{ for content in update_contents }}
+> {content.author} > {content.content}
+{{ endfor }}

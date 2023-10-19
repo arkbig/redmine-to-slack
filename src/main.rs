@@ -10,7 +10,7 @@ fn main() {
         std::thread::spawn(move || {
             for sig in signals.forever() {
                 println!("Received signal {:?}", sig);
-                proc_exit::exit(1);
+                proc_exit::exit(Err(proc_exit::Exit::new(proc_exit::Code::FAILURE)));
             }
         });
     }

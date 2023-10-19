@@ -1,0 +1,15 @@
+services:
+  app:
+    image: arkbig/redmine-to-slack
+    build:
+      context: ../../
+      dockerfile: deploy/docker/Dockerfile
+      args:
+        no_proxy: ${no_proxy-}
+        http_proxy: ${http_proxy-}
+        https_proxy: ${https_proxy-}
+    restart: "no"
+    environment:
+      CONTAINER_UID: ${CONTAINER_UID-}
+      CONTAINER_GID: ${CONTAINER_GID-}
+      RUST_BACKTRACE: ${RUST_BACKTRACE-}
