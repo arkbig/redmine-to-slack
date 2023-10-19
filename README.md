@@ -8,7 +8,7 @@ This `redmine-to-slack` command subscribes to Redmine and notifies Slack.
 
 ## Demo
 
-![demo](docs/demo.png)
+![demo](./docs/demo.png)
 
 ## Key Features
 
@@ -42,25 +42,25 @@ redmine-to-slack uses Incoming Webhooks for Slack notifications.
 <summary>How to get Slack Incoming Webhook URL </summary>
 
 1. Go to [slack api](https://api.slack.com/apps) and create a new app.
-  ![Create an App](docs/create-slack-app-1.png)
+  ![Create an App](./docs/create-slack-app-1.png)
 
 2. Create an app From scratch.
-  ![From scratch](docs/create-slack-app-2.png)
+  ![From scratch](./docs/create-slack-app-2.png)
 
 3. Set the App Name and Workspace.
-  ![Set the App Name and Workspace](docs/create-slack-app-3.png)
+  ![Set the App Name and Workspace](./docs/create-slack-app-3.png)
 
 4. Activate Incoming Webhooks.
-  ![Activate Incoming Webhooks](docs/create-slack-app-4.png)
+  ![Activate Incoming Webhooks](./docs/create-slack-app-4.png)
 
 5. Scroll down and Add New Webhook to Workspace. Then you can get the Webhook URL 🎉
-  ![Add New Webhook to Workspace](docs/create-slack-app-5.png)
+  ![Add New Webhook to Workspace](./docs/create-slack-app-5.png)
 
 6. If you want to change the app icon, set it in Manage distribution in Basic Information.
-  ![Manage distribution](docs/create-slack-app-6.png)
+  ![Manage distribution](./docs/create-slack-app-6.png)
 
-7. Scroll down and upload the icon such as [docs/redmine-to-slack.png](docs/redmine-to-slack.png).
-  ![Change the app icon](docs/create-slack-app-7.png)
+7. Scroll down and upload the icon such as [docs/redmine-to-slack.png](./docs/redmine-to-slack.png).
+  ![Change the app icon](./docs/create-slack-app-7.png)
 
 </details>
 
@@ -103,7 +103,7 @@ result:
 
 ### Custom template
 
-Create a template with reference to [resources/slack-notification.template](resource/slack-notification.template) and specify it with `--template-path <PATH>`.
+Create a template with reference to [resources/slack-notification.template](./resources/slack-notification.template) and specify it with `--template-path <PATH>`.
 
 Available variables:
 
@@ -170,9 +170,9 @@ cargo license --avoid-build-deps --avoid-dev-deps | awk -F ":" 'BEGIN {printf "|
 
 ## License
 
-"redmine-to-slack" is under [zlib License](./LICENSE). Please feel free to use this, but no warranty.
+"redmine-to-slack" is under [zlib License](./LICENSE.txt). Please feel free to use this, but no warranty.
 
 ## Development
 
-We have prepared [demo/compose.yaml](demo/compose.yaml) for local testing. Please start it up with `docker compose -f demo/compose.yaml up -d`.
+We have prepared [demo/compose.yaml](./demo/compose.yaml) for local testing. Please start it up with `docker compose -f demo/compose.yaml up -d`.
 If you set up [devbase](https://github.com/arkbig/devbase) in advance, you can start it with `redmine-to-slack https://redmine-r2s.dev.test https://echo-serv-r2s.dev.test/echo`.
