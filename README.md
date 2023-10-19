@@ -91,10 +91,10 @@ redmine-to-slack --redmine-api-key <KEY> https://redmine-r2s.dev.test https://ho
 
 result:
 
-> <https://redmine-r2s.dev.test/issues/2>
-> Demoプロジェクト
-> バグ [#2](https://redmine-r2s.dev.test/issues/2) 進行中のバグ [進行中 <- ~~新規~~]
-> 担当: dev loper <- ~~Redmine Admin~~  |  優先度: 普通  |  Last update: 2023-10-10T21:48:58+09:00
+> <https://redmine-r2s.dev.test/issues/2>  
+> Demoプロジェクト  
+> バグ [#2](https://redmine-r2s.dev.test/issues/2) 進行中のバグ [進行中 <- ~~新規~~]  
+> 担当: dev loper <- ~~Redmine Admin~~  |  優先度: 普通  |  Last update: 2023-10-10T21:48:58+09:00  
 > >Redmine Admin > 担当者が変わったよ。  見れるかな。
 >
 > >Redmine Admin > これお願いします。すぐ終わるでしょ。
