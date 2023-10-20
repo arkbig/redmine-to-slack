@@ -86,8 +86,11 @@ Please use the `-h`(shortly) or `--help`(fully) option for more information.
 ### Basic usage
 
 ```sh
-redmine-to-slack --redmine-api-key <KEY> https://redmine-r2s.dev.test https://hooks.slack.com/services/<TOKEN>
+redmine-to-slack --redmine-atom-key <KEY> --redmine-api-key <KEY> https://redmine-r2s.dev.test https://hooks.slack.com/services/<TOKEN>
 ```
+
+Atom access key is the string `key=<KEY>` in the Atom access URL.
+The API access key can be displayed in your personal settings.
 
 result:
 

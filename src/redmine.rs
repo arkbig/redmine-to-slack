@@ -44,6 +44,7 @@ pub fn refresh_updated_issues(
     prev_data: &mut RedmineData,
 ) -> anyhow::Result<Vec<UpdateInfo>> {
     let url = &args.subscribe_url;
+    let atom_key = &args.redmine_atom_key;
     let api_key = &args.redmine_api_key;
     let max_content_length = args.max_content_length;
     let filter = &args.filter;
@@ -52,7 +53,7 @@ pub fn refresh_updated_issues(
     let activity_map = get_activities(
         prev_data.prev_date,
         url,
-        api_key,
+        atom_key,
         filter,
         max_content_length,
     )?;
@@ -191,7 +192,7 @@ pub fn get_users_map(url: &str, api_key: &Option<String>) -> anyhow::Result<Hash
 fn get_page(url: &str, api_key: &Option<String>) -> anyhow::Result<String> {
     let request = ureq::get(url);
     let request = if let Some(api_key) = api_key {
-        request.set("Authorization", &format!("Bearer {}", api_key))
+        request.set("X-Redmine-API-Key", api_key)
     } else {
         request
     };
@@ -228,8 +229,17 @@ fn get_json_from_api(url: &str, api_key: &Option<String>) -> anyhow::Result<serd
     Ok(json)
 }
 
-fn get_atom_feed(url: &str, api_key: &Option<String>) -> anyhow::Result<feed_rs::model::Feed> {
-    let response = get_page(url, api_key)?;
+fn get_atom_feed(url: &str, atom_key: &Option<String>) -> anyhow::Result<feed_rs::model::Feed> {
+    let url = if let Some(atom_key) = atom_key {
+        if url.contains("?") {
+            format!("{}&key={}", url, atom_key)
+        } else {
+            format!("{}?key={}", url, atom_key)
+        }
+    } else {
+        url.to_string()
+    };
+    let response = get_page(&url, &None)?;
     let feed = feed_rs::parser::parse(response.as_bytes())?;
     Ok(feed)
 }
@@ -249,7 +259,7 @@ pub struct RedmineData {
 fn get_activities(
     prev_date: chrono::DateTime<chrono::Utc>,
     url: &str,
-    api_key: &Option<String>,
+    atom_key: &Option<String>,
     filter: &crate::cli_args::FilterArgs,
     max_content_length: usize,
 ) -> anyhow::Result<HashMap<u64, Vec<UpdateContent>>> {
@@ -278,7 +288,7 @@ fn get_activities(
     let id_re = regex::Regex::new(r".+/(\d+)").unwrap(); // get numbers from the last /
     let html_re = regex::Regex::new(r"<[^>]*?>|\n").unwrap();
     for atom in activity_atoms {
-        let feed = get_atom_feed(&atom, api_key)?;
+        let feed = get_atom_feed(&atom, atom_key)?;
         'entry: for entry in feed.entries {
             // Ignore projects
             if let Some(ignore_projects) = &filter.ignore_project {

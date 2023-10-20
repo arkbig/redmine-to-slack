@@ -1,3 +1,4 @@
-/target
-redmine-data.json
 .envrc
+/target
+Cargo.lock
+redmine-data.json

@@ -39,7 +39,8 @@
                 }
             },
             "args": [
-                "--redmine-api-key='$REDMINE_API_KEY'",
+                "--redmine-atom-key=$REDMINE_ATOM_KEY",
+                "--redmine-api-key=$REDMINE_API_KEY",
                 "https://redmine-r2s.dev.test",
                 "https://echo-serv-r2s.dev.test/echo"
             ],

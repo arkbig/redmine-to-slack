@@ -38,6 +38,13 @@ pub struct RedmineArgs {
     #[clap(long, value_name = "PATH", default_value = "redmine-data.json")]
     pub prev_redmine_data: String,
 
+    /// Redmine ATOM access key.
+    ///
+    /// If you specify a file starting starts with @, it will read from that file.
+    /// If you specify a environment variable starting with $, it will read from that environment variable.
+    #[clap(long, value_name = "KEY")]
+    pub redmine_atom_key: Option<String>,
+
     /// Redmine API access key.
     ///
     /// If you specify a file starting starts with @, it will read from that file.
@@ -103,6 +110,7 @@ fn normalize_redmine(args: &mut RedmineArgs) {
     if args.subscribe_url.ends_with("/") {
         args.subscribe_url.pop();
     }
+    normalize_redmine_atom_key(args).unwrap();
     normalize_redmine_api_key(args).unwrap();
     normalize_filter(args).unwrap();
 }
@@ -140,6 +148,13 @@ fn normalize_secret(value: &str) -> anyhow::Result<String> {
     else {
         Ok(value.to_string())
     }
+}
+
+fn normalize_redmine_atom_key(args: &mut RedmineArgs) -> anyhow::Result<()> {
+    if let Some(redmine_atom_key) = &args.redmine_atom_key {
+        args.redmine_atom_key = Some(normalize_secret(redmine_atom_key)?);
+    }
+    Ok(())
 }
 
 fn normalize_redmine_api_key(args: &mut RedmineArgs) -> anyhow::Result<()> {
