@@ -70,11 +70,16 @@ pub fn refresh_updated_issues(
     for (id, new_issue) in &new_issues {
         let old_issue = prev_data.issues.get(&id);
         let old_items = get_updated_items(&old_issue, &new_issue)?;
-        let local_updated_time =
-            chrono::DateTime::parse_from_rfc3339(new_issue["updated_on"].as_str().unwrap())?
-                .with_timezone(&chrono::Local);
+        let local_updated_time = chrono::DateTime::parse_from_rfc3339(
+            new_issue["updated_on"].as_str().unwrap_or_default(),
+        )?
+        .with_timezone(&chrono::Local);
         updates.push(UpdateInfo {
-            url: format!("{}/issues/{}", url, &new_issue["id"].as_u64().unwrap()),
+            url: format!(
+                "{}/issues/{}",
+                url,
+                &new_issue["id"].as_u64().unwrap_or_default()
+            ),
             local_updated_time,
             new_issue: new_issue.clone(),
             old_items,
@@ -97,8 +102,8 @@ pub fn save_purged_data(
         .issues
         .values()
         .map(|i| {
-            chrono::DateTime::parse_from_rfc3339(i["updated_on"].as_str().unwrap())
-                .unwrap()
+            chrono::DateTime::parse_from_rfc3339(i["updated_on"].as_str().unwrap_or_default())
+                .unwrap_or_default()
                 .with_timezone(&chrono::Utc)
         })
         .max();
@@ -114,11 +119,12 @@ pub fn save_purged_data(
             .issues
             .iter()
             .filter(|(_, issue)| {
-                let updated_on =
-                    chrono::DateTime::parse_from_rfc3339(issue["updated_on"].as_str().unwrap())
-                        .unwrap()
-                        .with_timezone(&chrono::Utc);
-                let is_closed = issue["status"]["is_closed"].as_bool().unwrap();
+                let updated_on = chrono::DateTime::parse_from_rfc3339(
+                    issue["updated_on"].as_str().unwrap_or_default(),
+                )
+                .unwrap_or_default()
+                .with_timezone(&chrono::Utc);
+                let is_closed = issue["status"]["is_closed"].as_bool().unwrap_or_default();
                 old_date < updated_on && !is_closed
             })
             .map(|(id, issue)| (*id, issue.clone()))
@@ -146,17 +152,17 @@ pub fn get_projects(url: &str, api_key: &Option<String>) -> anyhow::Result<Vec<P
         let json = get_json_from_api(&projects_api, api_key)?;
         let projects = json["projects"].as_array().unwrap();
         for project in projects {
-            let id = project["id"].as_u64().unwrap() as u32;
-            let name_id = project["identifier"].as_str().unwrap();
-            let name = project["name"].as_str().unwrap();
+            let id = project["id"].as_u64().unwrap_or_default() as u32;
+            let name_id = project["identifier"].as_str().unwrap_or_default();
+            let name = project["name"].as_str().unwrap_or_default();
             list.push(Project {
                 id,
                 name_id: name_id.to_string(),
                 name: name.to_string(),
             });
         }
-        let total_count = json["total_count"].as_u64().unwrap() as u32;
-        let limit = json["limit"].as_u64().unwrap() as u32;
+        let total_count = json["total_count"].as_u64().unwrap_or_default() as u32;
+        let limit = json["limit"].as_u64().unwrap_or_default() as u32;
         if offset + limit < total_count {
             offset += limit;
         } else {
@@ -174,12 +180,12 @@ pub fn get_users_map(url: &str, api_key: &Option<String>) -> anyhow::Result<Hash
         let json = get_json_from_api(&users_api, api_key)?;
         let users = json["users"].as_array().unwrap();
         for user in users {
-            let id = user["id"].as_u64().unwrap() as u32;
-            let name = user["login"].as_str().unwrap();
+            let id = user["id"].as_u64().unwrap_or_default() as u32;
+            let name = user["login"].as_str().unwrap_or_default();
             map.insert(name.to_string(), id);
         }
-        let total_count = json["total_count"].as_u64().unwrap() as u32;
-        let limit = json["limit"].as_u64().unwrap() as u32;
+        let total_count = json["total_count"].as_u64().unwrap_or_default() as u32;
+        let limit = json["limit"].as_u64().unwrap_or_default() as u32;
         if offset + limit < total_count {
             offset += limit;
         } else {

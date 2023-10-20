@@ -39,10 +39,11 @@
                 }
             },
             "args": [
-                "--redmine-atom-key=$REDMINE_ATOM_KEY",
-                "--redmine-api-key=$REDMINE_API_KEY",
+                "--redmine-atom-key=@work/redmine-atom-key.txt",
+                "--redmine-api-key=@work/redmine-api-key.txt",
+                "--prev-redmine-data=work/redmine-data.json",
                 "https://redmine-r2s.dev.test",
-                "https://echo-serv-r2s.dev.test/echo"
+                "@work/notify-url.txt"
             ],
             "cwd": "${workspaceFolder}"
         }

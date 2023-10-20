@@ -266,10 +266,13 @@ fn normalize_filter_user(args: &mut RedmineArgs) -> anyhow::Result<()> {
 }
 
 fn normalize_slack(args: &mut SlackArgs) {
-    if let Some(notify_url) = args.notify_url.as_mut() {
+    if args.notify_url.is_some() {
+        let notify_url = args.notify_url.as_ref().unwrap();
+        let mut notify_url = normalize_secret(notify_url).unwrap();
         if notify_url.ends_with("/") {
             notify_url.pop();
         }
+        args.notify_url = Some(notify_url);
         // normalize_slack_oauth_token(args).unwrap();
     }
 }
