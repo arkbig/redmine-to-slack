@@ -321,8 +321,11 @@ fn get_activities(
             if let Some(content) = content {
                 let mut content = html_re.replace_all(&content, "").trim().to_string();
                 if !content.is_empty() {
-                    if max_content_length < content.len() {
-                        content = format!("{}...", &content[..max_content_length]);
+                    if max_content_length < content.chars().count() {
+                        content = format!(
+                            "{}...",
+                            &content.chars().take(max_content_length).collect::<String>()
+                        );
                     }
                     let update_content = UpdateContent {
                         author: entry.authors[0].name.clone(),

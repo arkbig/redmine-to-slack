@@ -1,4 +1,6 @@
+*.override.yaml
 .envrc
 /target
+/work
 Cargo.lock
 redmine-data.json
