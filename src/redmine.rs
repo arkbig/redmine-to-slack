@@ -11,7 +11,7 @@ pub struct UpdateContent {
 #[derive(serde::Serialize, Clone)]
 pub struct UpdateInfo {
     pub url: String,
-    pub local_updated_time: chrono::DateTime<chrono::Local>,
+    pub local_updated_time: chrono::DateTime<chrono::FixedOffset>,
     pub new_issue: serde_json::Value,
     pub old_items: serde_json::Value,
     pub update_contents: Vec<UpdateContent>,
@@ -72,8 +72,13 @@ pub fn refresh_updated_issues(
         let old_items = get_updated_items(&old_issue, &new_issue)?;
         let local_updated_time = chrono::DateTime::parse_from_rfc3339(
             new_issue["updated_on"].as_str().unwrap_or_default(),
-        )?
-        .with_timezone(&chrono::Local);
+        )?;
+        let local_updated_time = if let Some(offset_hour) = args.offset_hour {
+            local_updated_time
+                .with_timezone(&chrono::FixedOffset::east_opt(offset_hour * 3600).unwrap())
+        } else {
+            local_updated_time.with_timezone(chrono::Local::now().offset())
+        };
         updates.push(UpdateInfo {
             url: format!(
                 "{}/issues/{}",

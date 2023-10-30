@@ -23,13 +23,11 @@ pub struct RedmineArgs {
     #[clap(value_parser, required = true)]
     pub subscribe_url: String,
 
-    /// Redmine access interval.
+    /// Offset time for local time
     ///
-    /// Set the desired interval to access Redmine and retrieve updates within that time frame, specified in minutes.
-    /// On the initial access, it retrieves the updates for the specified time duration.
-    /// If you specify 0, it will retrieve at once and exit.
-    #[clap(short, long, value_name = "DURATION", default_value="0s", value_parser=humantime::parse_duration)]
-    pub interval: std::time::Duration,
+    /// If not specified, the os local time will be used.
+    #[clap(long, value_name = "HOUR")]
+    pub offset_hour: Option<i32>,
 
     /// Previous data path.
     ///
