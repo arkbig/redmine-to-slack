@@ -39,6 +39,7 @@
                 }
             },
             "args": [
+                "--verbose",
                 "--redmine-atom-key=@work/redmine-atom-key.txt",
                 "--redmine-api-key=@work/redmine-api-key.txt",
                 "--prev-redmine-data=work/redmine-data.json",

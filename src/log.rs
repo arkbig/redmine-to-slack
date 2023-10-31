@@ -1,5 +1,12 @@
 // Copyright © ArkBig
 
+static LOG_LEVEL: std::sync::OnceLock<Severity> = std::sync::OnceLock::new();
+static LOG_LEVEL_DEFAULT: Severity = Severity::Default;
+
+pub fn set_level(level: Severity) {
+    let _ = LOG_LEVEL.set(level);
+}
+
 /// Log payload
 ///
 /// Log writing at drop time.(i.e. This should be short-lived.)
@@ -41,6 +48,11 @@ impl<'a> Payload<'a> {
         self
     }
     #[allow(dead_code)]
+    pub fn debug(&mut self) -> &mut Self {
+        self.severity = Severity::Debug;
+        self
+    }
+    #[allow(dead_code)]
     pub fn warning(&mut self) -> &mut Self {
         self.severity = Severity::Warning;
         self
@@ -73,15 +85,17 @@ impl<'a> Payload<'a> {
 
 impl<'a> Drop for Payload<'a> {
     fn drop(&mut self) {
-        println!("{}", serde_json::to_string(self).unwrap_or_default());
+        if LOG_LEVEL.get().unwrap_or_else(|| &LOG_LEVEL_DEFAULT) <= &self.severity {
+            println!("{}", serde_json::to_string(self).unwrap_or_default());
+        }
     }
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, PartialEq, PartialOrd)]
 #[allow(dead_code)]
 pub enum Severity {
-    Default,
     Debug,
+    Default,
     Info,
     Notice,
     Warning,
@@ -114,12 +128,20 @@ pub fn default(message: &str) -> Payload {
 }
 
 #[allow(dead_code)]
+pub fn debug(message: &str) -> Payload {
+    let mut payload = Payload::default();
+    payload.message(message).debug();
+    payload
+}
+
+#[allow(dead_code)]
 pub fn warning(message: &str) -> Payload {
     let mut payload = Payload::default();
     payload.message(message).warning();
     payload
 }
 
+#[allow(dead_code)]
 pub fn error(message: &str) -> Payload {
     let mut payload = Payload::default();
     payload.message(message).error();

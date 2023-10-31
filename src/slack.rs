@@ -8,6 +8,7 @@ pub fn notify(
     let template_path = &args.template_path;
 
     let msg = convert_to_post_msg(template_path, update)?;
+    crate::log::debug(&msg).category("slack");
 
     ureq::post(notify_url)
         .set("Content-Type", "application/json")

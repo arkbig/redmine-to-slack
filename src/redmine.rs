@@ -22,15 +22,18 @@ pub fn load_prev_data(args: &crate::cli_args::RedmineArgs) -> anyhow::Result<Red
     let prev_data = if std::path::Path::new(prev_data_path).exists() {
         let prev_data = std::fs::read_to_string(prev_data_path)?;
         if prev_data.is_empty() {
+            crate::log::debug("prev_data_path is empty.").category("redmine");
             RedmineData {
                 prev_date: chrono::DateTime::<chrono::Utc>::MIN_UTC,
                 issues: HashMap::new(),
             }
         } else {
+            crate::log::debug("load prev_data.").category("redmine");
             let prev_data: RedmineData = serde_json::from_str(&prev_data)?;
             prev_data
         }
     } else {
+        crate::log::debug("prev_data_path is not exists.").category("redmine");
         RedmineData {
             prev_date: chrono::DateTime::<chrono::Utc>::MIN_UTC,
             issues: HashMap::new(),
@@ -120,6 +123,7 @@ pub fn save_purged_data(
         let old_date = chrono::DateTime::<chrono::Utc>::from(
             prev_data.prev_date - humantime::parse_duration("50day").unwrap(),
         );
+        let all_num = prev_data.issues.len();
         prev_data.issues = prev_data
             .issues
             .iter()
@@ -134,9 +138,18 @@ pub fn save_purged_data(
             })
             .map(|(id, issue)| (*id, issue.clone()))
             .collect();
+        let new_num = prev_data.issues.len();
+        if all_num != new_num {
+            crate::log::debug(&format!(
+                "Purged old issues. remove_num={}",
+                all_num - new_num
+            ))
+            .category("redmine");
+        }
     }
 
     // Save to file
+    crate::log::debug(&format!("save prev_data. path={}", prev_data_path)).category("redmine");
     let json = serde_json::to_string_pretty(prev_data)?;
     std::fs::write(prev_data_path, json)?;
 
@@ -174,6 +187,7 @@ pub fn get_projects(url: &str, api_key: &Option<String>) -> anyhow::Result<Vec<P
             break;
         }
     }
+    crate::log::debug(&format!("get_projects. count={}", list.len())).category("redmine");
     Ok(list)
 }
 
@@ -197,6 +211,7 @@ pub fn get_users_map(url: &str, api_key: &Option<String>) -> anyhow::Result<Hash
             break;
         }
     }
+    crate::log::debug(&format!("get_users_map. count={}", map.len())).category("redmine");
     Ok(map)
 }
 
@@ -300,6 +315,8 @@ fn get_activities(
     let html_re = regex::Regex::new(r"<[^>]*?>|\n").unwrap();
     for atom in activity_atoms {
         let feed = get_atom_feed(&atom, atom_key)?;
+        let all_count = feed.entries.len();
+        let mut match_count = 0;
         'entry: for entry in feed.entries {
             // Ignore projects
             if let Some(ignore_projects) = &filter.ignore_project {
@@ -354,8 +371,15 @@ fn get_activities(
             } else if !activity_map.contains_key(&id) {
                 activity_map.insert(id, vec![]);
             }
-        }
-    }
+            match_count += 1;
+        } // end of 'entry
+        let ignore_count = all_count - match_count;
+        crate::log::debug(&format!(
+            "get_atom_feed from {}. count={} (ignore={})",
+            &atom, all_count, ignore_count
+        ))
+        .category("redmine");
+    } // end of activity_atoms
 
     Ok(activity_map)
 }
@@ -376,6 +400,7 @@ fn get_issues(
             .collect::<Vec<_>>()
             .join(",")
     );
+    crate::log::debug(&format!("get_issues from {}", &issues_api)).category("redmine");
     loop {
         let json = get_json_from_api(&issues_api, api_key)?;
         json["issues"].as_array().unwrap().iter().for_each(|issue| {

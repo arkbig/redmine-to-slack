@@ -13,6 +13,10 @@ pub struct CliArgs {
     /// Args for Slack.
     #[clap(flatten)]
     pub slack: SlackArgs,
+
+    /// Verbose mode
+    #[clap(long)]
+    pub verbose: bool,
 }
 
 #[derive(Clone, Debug, clap::Parser)]

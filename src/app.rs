@@ -8,6 +8,9 @@
 /// 3. Notify Slack.
 pub fn run() -> proc_exit::ExitResult {
     let cli_args = crate::cli_args::parse();
+    if cli_args.verbose {
+        crate::log::set_level(crate::log::Severity::Debug);
+    }
 
     let mut ret = (proc_exit::Code::SUCCESS, None);
 
